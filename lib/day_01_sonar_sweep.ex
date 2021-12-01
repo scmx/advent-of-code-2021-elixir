@@ -19,14 +19,13 @@ defmodule Adventofcode.Day01SonarSweep do
     def solve(lines) do
       lines
       |> Enum.chunk_every(2, 1, :discard)
-      |> Enum.filter(fn [a, b] -> a < b end)
-      |> Enum.count()
+      |> Enum.count(fn [a, b] -> a < b end)
     end
   end
 
   defmodule Part2 do
-    def solve(state) do
-      state
+    def solve(lines) do
+      lines
       |> Enum.chunk_every(3, 1, :discard)
       |> Enum.map(&Enum.sum/1)
       |> Part1.solve()
@@ -38,11 +37,7 @@ defmodule Adventofcode.Day01SonarSweep do
       input
       |> String.trim()
       |> String.split("\n")
-      |> Enum.map(&parse_line/1)
-    end
-
-    defp parse_line(line) do
-      String.to_integer(line)
+      |> Enum.map(&String.to_integer/1)
     end
   end
 end

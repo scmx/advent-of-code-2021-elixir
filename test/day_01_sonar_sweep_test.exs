@@ -3,8 +3,6 @@ defmodule Adventofcode.Day01SonarSweepTest do
 
   import Adventofcode.Day01SonarSweep
 
-  alias Adventofcode.Day01SonarSweep.{Parser}
-
   @example """
   199
   200
