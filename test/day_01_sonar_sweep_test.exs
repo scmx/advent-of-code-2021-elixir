@@ -27,4 +27,14 @@ defmodule Adventofcode.Day01SonarSweepTest do
       assert 1692 = puzzle_input() |> part_1()
     end
   end
+
+  describe "part_2/1" do
+    test "counts larger three sum measurements" do
+      assert 5 = @example |> part_2()
+    end
+
+    test_with_puzzle_input do
+      assert 1724 = puzzle_input() |> part_2()
+    end
+  end
 end
