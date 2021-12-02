@@ -6,50 +6,36 @@ defmodule Adventofcode.Day02Dive do
   def part_1(input) do
     input
     |> Parser.parse()
-    |> State.new()
-    |> Part1.solve()
+    |> Enum.reduce(State.new(), &%{&2 | pos: Part1.move(&1, &2.pos)})
     |> State.sum()
   end
 
   def part_2(input) do
     input
     |> Parser.parse()
-    |> State.new()
-    |> Part2.solve()
+    |> Enum.reduce(State.new(), &%{&2 | pos: Part2.move(&1, &2.pos)})
     |> State.sum()
   end
 
   defmodule State do
     @enforce_keys []
-    defstruct pos: {0, 0, 0}, commands: []
+    defstruct pos: {0, 0, 0}
 
-    def new(commands), do: %__MODULE__{commands: commands}
+    def new(), do: %__MODULE__{}
 
     def sum(%{pos: {x, y, _}}), do: x * y
   end
 
   defmodule Part1 do
-    def solve(%{commands: []} = state), do: state
-
-    def solve(%{pos: {x, y, z}, commands: [{command, num} | commands]} = state) do
-      solve(%{state | pos: move({command, num}, {x, y, z}), commands: commands})
-    end
-
-    defp move({:forward, num}, {x, y, z}), do: {x + num, y, z}
-    defp move({:down, num}, {x, y, z}), do: {x, y + num, z}
-    defp move({:up, num}, {x, y, z}), do: {x, y - num, z}
+    def move({:forward, num}, {x, y, z}), do: {x + num, y, z}
+    def move({:down, num}, {x, y, z}), do: {x, y + num, z}
+    def move({:up, num}, {x, y, z}), do: {x, y - num, z}
   end
 
   defmodule Part2 do
-    def solve(%{commands: []} = state), do: state
-
-    def solve(%{pos: {x, y, z}, commands: [{command, num} | commands]} = state) do
-      solve(%{state | pos: move({command, num}, {x, y, z}), commands: commands})
-    end
-
-    defp move({:down, num}, {x, y, z}), do: {x, y, z + num}
-    defp move({:up, num}, {x, y, z}), do: {x, y, z - num}
-    defp move({:forward, num}, {x, y, z}), do: {x + num, y + z * num, z}
+    def move({:forward, num}, {x, y, z}), do: {x + num, y + z * num, z}
+    def move({:down, num}, {x, y, z}), do: {x, y, z + num}
+    def move({:up, num}, {x, y, z}), do: {x, y, z - num}
   end
 
   defmodule Parser do
