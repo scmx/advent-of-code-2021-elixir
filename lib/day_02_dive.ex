@@ -1,30 +1,23 @@
 defmodule Adventofcode.Day02Dive do
   use Adventofcode
 
-  alias __MODULE__.{Parser, Part1, Part2, State}
+  alias __MODULE__.{Parser, Part1, Part2}
 
   def part_1(input) do
     input
     |> Parser.parse()
-    |> Enum.reduce(State.new(), &%{&2 | pos: Part1.move(&1, &2.pos)})
-    |> State.sum()
+    |> Enum.reduce({0, 0, 0}, &Part1.move/2)
+    |> sum
   end
 
   def part_2(input) do
     input
     |> Parser.parse()
-    |> Enum.reduce(State.new(), &%{&2 | pos: Part2.move(&1, &2.pos)})
-    |> State.sum()
+    |> Enum.reduce({0, 0, 0}, &Part2.move/2)
+    |> sum
   end
 
-  defmodule State do
-    @enforce_keys []
-    defstruct pos: {0, 0, 0}
-
-    def new(), do: %__MODULE__{}
-
-    def sum(%{pos: {x, y, _}}), do: x * y
-  end
+  defp sum({x, y, _}), do: x * y
 
   defmodule Part1 do
     def move({:forward, num}, {x, y, z}), do: {x + num, y, z}
