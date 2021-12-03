@@ -1,7 +1,7 @@
 defmodule Adventofcode.Day03BinaryDiagnostic do
   use Adventofcode
 
-  alias __MODULE__.{Binary, Parser, Part1, Part2}
+  alias __MODULE__.{MinMax, Parser, Part1, Part2}
 
   def part_1(input) do
     input
@@ -17,78 +17,43 @@ defmodule Adventofcode.Day03BinaryDiagnostic do
 
   defmodule Part1 do
     def solve(list) do
-      gamma_rate(list) * epsilon_rate(list)
+      rating(list, :min) * rating(list, :max)
     end
 
-    def gamma_rate(list) do
+    def rating(list, type) do
       list
-      |> List.zip()
-      |> Enum.map(&Enum.join(Tuple.to_list(&1)))
-      |> Enum.map(&Binary.most_common_bit_value/1)
+      |> Enum.map(&do_rating(&1, type))
       |> Enum.join()
       |> String.to_integer(2)
     end
 
-    defp epsilon_rate(list) do
-      list
-      |> List.zip()
-      |> Enum.map(&Enum.join(Tuple.to_list(&1)))
-      |> Enum.map(&Binary.least_common_bit_value/1)
-      |> Enum.join()
-      |> String.to_integer(2)
+    defp do_rating(binary, type) do
+      binary
+      |> String.graphemes()
+      |> Enum.frequencies()
+      |> MinMax.get(type, &elem(&1, 1))
+      |> elem(0)
     end
   end
 
   defmodule Part2 do
-    def solve(list) do
-      oxygen_generator_rating(list) * co2_scrubber_rating(list)
-    end
+    def solve(list), do: rating(list, :min) * rating(list, :max)
 
-    def oxygen_generator_rating(list, index \\ 0)
+    defp rating(list, _type, index \\ 0)
+    defp rating([result], _type, _index), do: String.to_integer(result, 2)
 
-    def oxygen_generator_rating([result], _index) do
-      String.to_integer(result, 2)
-    end
-
-    def oxygen_generator_rating(list, index) do
-      most_common = Binary.most_common_bit_value(Enum.map_join(list, &String.at(&1, index)))
-
+    defp rating(list, type, index) do
       list
-      |> Enum.filter(&(String.to_integer(String.at(&1, index)) == most_common))
-      |> oxygen_generator_rating(index + 1)
-    end
-
-    def co2_scrubber_rating(list, index \\ 0)
-
-    def co2_scrubber_rating([result], _index) do
-      String.to_integer(result, 2)
-    end
-
-    def co2_scrubber_rating(list, index) do
-      least_common = Binary.least_common_bit_value(Enum.map_join(list, &String.at(&1, index)))
-
-      list
-      |> Enum.filter(&(String.to_integer(String.at(&1, index)) == least_common))
-      |> co2_scrubber_rating(index + 1)
+      |> Enum.group_by(&String.at(&1, index))
+      |> MinMax.get(type, &length(elem(&1, 1)))
+      |> elem(1)
+      |> rating(type, index + 1)
     end
   end
 
-  defmodule Binary do
-    def most_common_bit_value(binary) do
-      if String.length(String.replace(binary, "0", "")) * 2 < String.length(binary) do
-        0
-      else
-        1
-      end
-    end
-
-    def least_common_bit_value(binary) do
-      if String.length(String.replace(binary, "0", "")) * 2 < String.length(binary) do
-        1
-      else
-        0
-      end
-    end
+  defmodule MinMax do
+    def get(groups, :max, fun), do: Enum.max_by(groups, fun, &>/2)
+    def get(groups, :min, fun), do: Enum.min_by(groups, fun)
   end
 
   defmodule Parser do
@@ -103,12 +68,14 @@ defmodule Adventofcode.Day03BinaryDiagnostic do
       |> String.trim()
       |> String.split("\n")
       |> Enum.map(&parse_line/1)
+      |> List.zip()
+      |> Enum.map(&Enum.join(Tuple.to_list(&1)))
     end
 
     defp parse_line(line) do
       line
-      |> String.to_charlist()
-      |> Enum.map(&(&1 - ?0))
+      |> String.graphemes()
+      |> Enum.map(&String.to_integer/1)
     end
   end
 end

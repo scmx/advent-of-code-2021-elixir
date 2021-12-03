@@ -43,18 +43,11 @@ defmodule Adventofcode.Day03BinaryDiagnosticTest do
   describe "Parser.parse_part_1/1" do
     test "parses input" do
       assert [
-               [0, 0, 1, 0, 0],
-               [1, 1, 1, 1, 0],
-               [1, 0, 1, 1, 0],
-               [1, 0, 1, 1, 1],
-               [1, 0, 1, 0, 1],
-               [0, 1, 1, 1, 1],
-               [0, 0, 1, 1, 1],
-               [1, 1, 1, 0, 0],
-               [1, 0, 0, 0, 0],
-               [1, 1, 0, 0, 1],
-               [0, 0, 0, 1, 0],
-               [0, 1, 0, 1, 0]
+               "011110011100",
+               "010001010101",
+               "111111110000",
+               "011101100011",
+               "000111100100"
              ] = @example |> Parser.parse_part_1()
     end
   end
