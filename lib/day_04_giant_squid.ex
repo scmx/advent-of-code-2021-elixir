@@ -1,29 +1,27 @@
 defmodule Adventofcode.Day04GiantSquid do
   use Adventofcode
 
-  alias __MODULE__.{Parser, Part1, Part2, State}
+  alias __MODULE__.{Parser, Solver, State}
 
   def part_1(input) do
     input
     |> Parser.parse()
     |> State.new()
-    |> Part1.solve()
+    |> Solver.solve(:part_1)
   end
 
   def part_2(input) do
     input
     |> Parser.parse()
     |> State.new()
-    |> Part2.solve()
+    |> Solver.solve(:part_2)
   end
 
   defmodule Board do
+    @unmarked {nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
+               nil, nil, nil, nil, nil, nil, nil, nil, nil}
     @enforce_keys [:grid]
-    defstruct bingo?: false,
-              grid: nil,
-              marked:
-                {nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
-                 nil, nil, nil, nil, nil, nil, nil, nil, nil}
+    defstruct bingo?: false, grid: nil, marked: @unmarked
 
     def new(grid), do: %__MODULE__{grid: grid}
 
@@ -58,27 +56,22 @@ defmodule Adventofcode.Day04GiantSquid do
       %__MODULE__{random_order: random_order, boards: Enum.map(boards, &Board.new/1)}
     end
 
-    def sum_unmarked_numbers(%Board{grid: grid, marked: marked}, %State{} = state) do
-      sum =
-        0..24
-        |> Enum.map(fn
-          index when elem(marked, index) == true -> 0
-          index -> elem(grid, index)
-        end)
-        |> Enum.sum()
-
-      sum * hd(state.random_order)
+    def unmarked_numbers(%Board{grid: grid, marked: marked}, %State{}) do
+      Enum.map(0..24, fn
+        index when elem(marked, index) == true -> 0
+        index -> elem(grid, index)
+      end)
     end
   end
 
-  defmodule Part1 do
-    def solve(state) do
+  defmodule Solver do
+    def solve(state, part) do
       state.random_order
-      |> Enum.reduce_while(state, &do_solve/2)
-      |> print_bingo
+      |> Enum.reduce_while(state, &do_solve(&1, &2, part))
+      |> score
     end
 
-    defp do_solve(num, acc) do
+    defp do_solve(num, acc, :part_1) do
       boards = acc.boards |> Enum.map(&Board.mark(&1, [num]))
 
       if Enum.any?(boards, & &1.bingo?) do
@@ -88,21 +81,7 @@ defmodule Adventofcode.Day04GiantSquid do
       end
     end
 
-    defp print_bingo(state) do
-      state.boards
-      |> Enum.find(& &1.bingo?)
-      |> State.sum_unmarked_numbers(state)
-    end
-  end
-
-  defmodule Part2 do
-    def solve(state) do
-      state.random_order
-      |> Enum.reduce_while(state, &do_solve/2)
-      |> print_bingo
-    end
-
-    defp do_solve(num, acc) do
+    defp do_solve(num, acc, :part_2) do
       boards = acc.boards |> Enum.reject(& &1.bingo?) |> Enum.map(&Board.mark(&1, [num]))
 
       if Enum.all?(boards, & &1.bingo?) do
@@ -112,10 +91,15 @@ defmodule Adventofcode.Day04GiantSquid do
       end
     end
 
-    defp print_bingo(state) do
+    defp score(state) do
+      hd(state.random_order) * do_score(state)
+    end
+
+    defp do_score(state) do
       state.boards
       |> Enum.find(& &1.bingo?)
-      |> State.sum_unmarked_numbers(state)
+      |> State.unmarked_numbers(state)
+      |> Enum.sum()
     end
   end
 
