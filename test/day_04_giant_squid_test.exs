@@ -31,6 +31,20 @@ defmodule Adventofcode.Day04GiantSquidTest do
     test "board 3 will win and get score" do
       assert 4512 = @example |> part_1()
     end
+
+    test_with_puzzle_input do
+      assert 58838 = puzzle_input() |> part_1()
+    end
+  end
+
+  describe "part_2/1" do
+    test "" do
+      assert 1924 = @example |> part_2()
+    end
+
+    test_with_puzzle_input do
+      assert 6256 = puzzle_input() |> part_2()
+    end
   end
 
   @grid1 {22, 13, 17, 11, 0, 8, 2, 23, 4, 24, 21, 9, 14, 16, 7, 6, 10, 3, 18, 5, 1, 12, 20, 15,
@@ -42,37 +56,25 @@ defmodule Adventofcode.Day04GiantSquidTest do
   @grid3 {14, 21, 17, 24, 4, 10, 16, 15, 9, 19, 18, 8, 23, 26, 20, 22, 11, 13, 6, 5, 2, 0, 12, 3,
           7}
 
-  describe "Board.bingo?/1" do
+  describe "board.bingo?" do
     test "detects bingo in first row" do
-      import Board
-      assert @grid1 |> new() |> mark([22, 13, 17, 11, 0]) |> bingo?()
+      board = @grid1 |> Board.new() |> Board.mark([22, 13, 17, 11, 0])
+      assert board.bingo?
     end
 
     test "detects bingo in second row" do
-      import Board
-      assert @grid1 |> new() |> mark([8, 2, 23, 4, 24]) |> bingo?()
+      board = @grid1 |> Board.new() |> Board.mark([8, 2, 23, 4, 24])
+      assert board.bingo?
     end
 
     test "does not detect invalid bingo in second row" do
-      import Board
-      refute @grid1 |> new() |> mark([8, 2, 4, 24]) |> bingo?()
+      board = @grid1 |> Board.new() |> Board.mark([8, 2, 4, 24])
+      refute board.bingo?
     end
 
     test "detects bingo in first column" do
-      import Board
-      assert @grid1 |> new() |> mark([22, 8, 21, 6, 1]) |> bingo?()
-    end
-
-    @tag :skip
-    test "detects bingo in diagonal" do
-      import Board
-      assert @grid1 |> new() |> mark([22, 2, 14, 18, 19]) |> bingo?()
-    end
-
-    @tag :skip
-    test "detects bingo in other diagonal" do
-      import Board
-      assert @grid1 |> new() |> mark([0, 4, 14, 10, 1]) |> bingo?()
+      board = @grid1 |> Board.new() |> Board.mark([22, 8, 21, 6, 1])
+      assert board.bingo?
     end
   end
 
