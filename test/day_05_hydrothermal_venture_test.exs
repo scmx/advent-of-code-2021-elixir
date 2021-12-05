@@ -28,19 +28,25 @@ defmodule Adventofcode.Day05HydrothermalVentureTest do
     end
   end
 
+  describe "part_2/1" do
+    test "" do
+      assert 12 = @example |> part_2()
+    end
+  end
+
   describe "Parser.parse/1" do
     test "parses input" do
       assert [
-               {0..2, 9..9},
-               {0..5, 9..9},
-               {0..8, 0..8},
-               {0..8, 0..8},
-               {1..3, 4..4},
-               {2..2, 1..2},
-               {2..6, 0..4},
-               {3..9, 4..4},
-               {5..8, 2..5},
-               {7..7, 0..4}
+               [[0, 2], [9, 9]],
+               [[0, 5], [9, 9]],
+               [[0, 8], [0, 8]],
+               [[2, 2], [2, 1]],
+               [[3, 1], [4, 4]],
+               [[5, 8], [5, 2]],
+               [[6, 2], [4, 0]],
+               [[7, 7], [0, 4]],
+               [[8, 0], [0, 8]],
+               [[9, 3], [4, 4]]
              ] = @example |> Parser.parse()
     end
   end
