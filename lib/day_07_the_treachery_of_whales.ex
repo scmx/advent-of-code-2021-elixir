@@ -1,44 +1,28 @@
 defmodule Adventofcode.Day07TheTreacheryOfWhales do
   use Adventofcode
 
-  alias __MODULE__.{Parser, Part1, Part2}
+  alias __MODULE__.{Parser, Solver}
 
-  def part_1(input) do
-    input
-    |> Parser.parse()
-    |> Part1.solve()
-  end
+  def part_1(input), do: input |> Parser.parse() |> Solver.solve(:part_1)
 
-  def part_2(input) do
-    input
-    |> Parser.parse()
-    |> Part2.solve()
-  end
+  def part_2(input), do: input |> Parser.parse() |> Solver.solve(:part_2)
 
-  defmodule Part1 do
-    def solve(crabs) do
+  defmodule Solver do
+    def solve(crabs, part) do
       crabs
-      |> Enum.map(&align(&1, crabs))
-      |> Enum.min_by(&elem(&1, 1))
-      |> elem(1)
+      |> Enum.map(&do_solve(&1, crabs, part))
+      |> Enum.min()
     end
 
-    defp align(crab, crabs) do
-      {crab, crabs |> Enum.map(&abs(&1 - crab)) |> Enum.sum()}
-    end
-  end
-
-  defmodule Part2 do
-    def solve(crabs) do
+    defp do_solve(pos, crabs, part) do
       crabs
-      |> Enum.map(&align(&1, crabs))
-      |> Enum.min_by(&elem(&1, 1))
-      |> elem(1)
+      |> Enum.map(&align(&1, pos, part))
+      |> Enum.sum()
     end
 
-    defp align(crab, crabs) do
-      {crab, crabs |> Enum.map(&Enum.sum(1..abs(&1 - crab - 1))) |> Enum.sum()}
-    end
+    defp align(crab, pos, :part_1), do: abs(crab - pos)
+
+    defp align(crab, pos, :part_2), do: Enum.sum(1..abs(crab - pos - 1))
   end
 
   defmodule Parser do
