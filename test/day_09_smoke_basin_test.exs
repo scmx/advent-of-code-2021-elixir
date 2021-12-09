@@ -14,7 +14,7 @@ defmodule Adventofcode.Day09SmokeBasinTest do
   """
 
   describe "part_1/1" do
-    test "" do
+    test "sum of the risk levels of all low points on your heightmap" do
       assert 15 = @example |> part_1()
     end
 

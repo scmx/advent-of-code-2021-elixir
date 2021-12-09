@@ -1,7 +1,7 @@
 defmodule Adventofcode.Day09SmokeBasin do
   use Adventofcode
 
-  alias __MODULE__.{Coordinate, Parser, Part1}
+  alias __MODULE__.{Parser, Part1}
 
   def part_1(input) do
     input
@@ -9,17 +9,6 @@ defmodule Adventofcode.Day09SmokeBasin do
     |> Part1.solve()
   end
 
-  defmodule Coordinate do
-    @neighbours [
-      {0, 1},
-      {1, 0},
-      {0, -1},
-      {-1, 0}
-    ]
-    def neighbours({x, y}) do
-      Enum.map(@neighbours, fn {dx, dy} -> {x + dx, y + dy} end)
-    end
-  end
 
   defmodule Part1 do
     def solve(state) do
@@ -31,10 +20,20 @@ defmodule Adventofcode.Day09SmokeBasin do
 
     defp low_point?({{x, y}, height}, state) do
       {x, y}
-      |> Coordinate.neighbours()
+      |> neighbours()
       |> Enum.map(&Map.get(state, &1))
       |> Enum.filter(& &1)
       |> Enum.all?(&(height < &1))
+    end
+
+    @neighbours [
+      {0, 1},
+      {1, 0},
+      {0, -1},
+      {-1, 0}
+    ]
+    def neighbours({x, y}) do
+      Enum.map(@neighbours, fn {dx, dy} -> {x + dx, y + dy} end)
     end
   end
 
