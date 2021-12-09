@@ -1,7 +1,7 @@
 defmodule Adventofcode.Day09SmokeBasin do
   use Adventofcode
 
-  alias __MODULE__.{Parser, Part1}
+  alias __MODULE__.{Parser, Part1, Part2}
 
   def part_1(input) do
     input
@@ -9,6 +9,11 @@ defmodule Adventofcode.Day09SmokeBasin do
     |> Part1.solve()
   end
 
+  def part_2(input) do
+    input
+    |> Parser.parse()
+    |> Part2.solve()
+  end
 
   defmodule Part1 do
     def solve(state) do
@@ -18,7 +23,7 @@ defmodule Adventofcode.Day09SmokeBasin do
       |> Enum.sum()
     end
 
-    defp low_point?({{x, y}, height}, state) do
+    def low_point?({{x, y}, height}, state) do
       {x, y}
       |> neighbours()
       |> Enum.map(&Map.get(state, &1))
@@ -34,6 +39,35 @@ defmodule Adventofcode.Day09SmokeBasin do
     ]
     def neighbours({x, y}) do
       Enum.map(@neighbours, fn {dx, dy} -> {x + dx, y + dy} end)
+    end
+  end
+
+  defmodule Part2 do
+    def solve(state) do
+      state
+      |> Enum.filter(&Part1.low_point?(&1, state))
+      |> Enum.map(&scan_basin([&1], state))
+      |> Enum.sort(:desc)
+      |> Enum.take(3)
+      |> Enum.reduce(1, &(&1 * &2))
+    end
+
+    defp scan_basin(basin, state) do
+      case basin
+           |> Enum.flat_map(&do_scan_basin(&1, state))
+           |> Enum.uniq() do
+        ^basin -> basin |> Enum.map(&elem(&1, 1)) |> Enum.count()
+        basin -> scan_basin(basin, state)
+      end
+    end
+
+    defp do_scan_basin({{x, y}, height}, state) do
+      {x, y}
+      |> Part1.neighbours()
+      |> Enum.map(&{&1, Map.get(state, &1)})
+      |> Enum.filter(&elem(&1, 1))
+      |> Enum.filter(fn {_, h} -> h != 9 and h > height end)
+      |> Enum.concat([{{x, y}, height}])
     end
   end
 

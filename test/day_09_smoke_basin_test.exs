@@ -23,6 +23,16 @@ defmodule Adventofcode.Day09SmokeBasinTest do
     end
   end
 
+  describe "part_2/1" do
+    test "multiply together the sizes of the three largest basins" do
+      assert 1134 = @example |> part_2()
+    end
+
+    test_with_puzzle_input do
+      assert 1_019_700 = puzzle_input() |> part_2()
+    end
+  end
+
   describe "Parser.parse/1" do
     test "parses input" do
       assert %{
