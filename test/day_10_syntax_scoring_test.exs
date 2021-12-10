@@ -28,6 +28,16 @@ defmodule Adventofcode.Day10SyntaxScoringTest do
     end
   end
 
+  describe "part_2/1" do
+    test "what is the middle score" do
+      assert 288_957 = @example |> part_2()
+    end
+
+    test_with_puzzle_input do
+      assert 3_241_238_967 = puzzle_input() |> part_2()
+    end
+  end
+
   describe "Parser.parse/1" do
     test "parses input" do
       assert [
