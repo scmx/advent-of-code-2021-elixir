@@ -67,6 +67,24 @@ defmodule Adventofcode.Day12PassagePathingTest do
     end
   end
 
+  describe "part_2/1" do
+    test "36 paths through" do
+      assert 36 = @example |> part_2()
+    end
+
+    test "103 paths through" do
+      assert 103 = @example2 |> part_2()
+    end
+
+    test "3509 paths through" do
+      assert 3509 = @example3 |> part_2()
+    end
+
+    test_with_puzzle_input do
+      assert 152_480 = puzzle_input() |> part_2()
+    end
+  end
+
   describe "Parser.parse/1" do
     test "parses input" do
       assert [
