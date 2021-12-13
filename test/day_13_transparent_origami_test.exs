@@ -57,20 +57,55 @@ defmodule Adventofcode.Day13TransparentOrigamiTest do
     end
   end
 
+  # @example2"""
+  # """
+
   describe "part_1/1" do
     test "17 dots are visible after first fold" do
       assert 17 = @example |> part_1()
     end
+
+    # test "" do
+    #   assert 1337 = @example2 |> part_1()
+    # end
 
     test_with_puzzle_input do
       assert 781 = puzzle_input() |> part_1()
     end
   end
 
-  describe "Part1.fold/2" do
-    test "folds a coordinate" do
-      true
-      # assert Part1.fold({:x, 5}, {0, 0}) == {{
+  describe "part_2/1" do
+    @expected """
+              #####
+              #   #
+              #   #
+              #   #
+              #####
+              """
+              |> String.trim()
+    test "result after all folds" do
+      assert @expected ==
+               @example
+               |> part_2()
+               |> String.split("\n")
+               |> Enum.map_join("\n", &String.trim_trailing/1)
+    end
+
+    @expected """
+              ###  #### ###   ##   ##    ## ###  ###
+              #  # #    #  # #  # #  #    # #  # #  #
+              #  # ###  #  # #    #       # #  # ###
+              ###  #    ###  #    # ##    # ###  #  #
+              #    #    # #  #  # #  # #  # #    #  #
+              #    #### #  #  ##   ###  ##  #    ###
+              """
+              |> String.trim()
+    test_with_puzzle_input do
+      assert @expected ==
+               puzzle_input()
+               |> part_2()
+               |> String.split("\n")
+               |> Enum.map_join("\n", &String.trim_trailing/1)
     end
   end
 end
